@@ -3,6 +3,10 @@ div#container {
   height: 100vh;
   display: grid;
   grid-template-columns: repeat(2, 1fr);
+
+  @media only screen and (max-width: 678px) {
+    grid-template-columns: 1fr;
+  }
 }
 
 aside.side-bar-illustration {
@@ -26,6 +30,10 @@ aside.side-bar-illustration {
 
   > p {
     color: #ccc;
+  }
+
+  @media only screen and (max-width: 678px) {
+    display: none;
   }
 }
 
