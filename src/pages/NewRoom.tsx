@@ -1,23 +1,10 @@
+import { Link } from "react-router-dom";
 import illustrationimg from "../assets/images/illustration.svg";
 import logoImg from "../assets/images/logo.svg";
-import googleIconImg from "../assets/images/google-icon.svg";
-
-import { auth, firebase } from "../services/firebase";
-import { useNavigate } from "react-router-dom";
 
 import "../styles/auth.scss";
 
-export function Home() {
-  const navigate = useNavigate();
-
-  function handleCreateRoom(): void {
-    const provider =  new firebase.auth.GoogleAuthProvider();
-    auth.signInWithPopup(provider).then(result => {
-      console.log(result);
-
-      navigate("/rooms/new");
-    })
-  }
+export default function NewRoom() {
   return(
     <div id="container">
       <aside className="side-bar-illustration">
@@ -28,21 +15,20 @@ export function Home() {
       <main className="content-main">
         <div className="content-main-login">
           <img src={logoImg} alt="LetMeask" />
-          <button onClick={handleCreateRoom}>
-            <img src={googleIconImg} alt="Logo do Google" />
-            Crie sua sala com o google
-          </button>
-          <div>ou entre uma sala</div>
+          <h2>Criar uma nova sala</h2>
           <form className="content-form">
             <input
               type="text"
               name=""
-              placeholder="Digite o código da sala"
+              placeholder="Nome da sala"
             />
             <button type="submit">
-              Entrar na sala
+              Criar Sala
             </button>
           </form>
+          <p>
+            Quer entrar em uma sala existente? <Link to="/">Clique aqui</Link>
+          </p>
         </div>
       </main>
     </div>
