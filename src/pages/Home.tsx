@@ -1,23 +1,26 @@
+import { useContext } from "react";
 import illustrationimg from "../assets/images/illustration.svg";
 import logoImg from "../assets/images/logo.svg";
 import googleIconImg from "../assets/images/google-icon.svg";
 
-import { auth, firebase } from "../services/firebase";
 import { useNavigate } from "react-router-dom";
+import { AuthContext } from "../App";
 
 import "../styles/auth.scss";
 
 export function Home() {
+
+  const { user, signInWithGoogle } = useContext(AuthContext);
+
   const navigate = useNavigate();
 
-  function handleCreateRoom(): void {
-    const provider =  new firebase.auth.GoogleAuthProvider();
-    auth.signInWithPopup(provider).then(result => {
-      console.log(result);
-
-      navigate("/rooms/new");
-    })
+  async function handleCreateRoom() {
+    if (!user) {
+      await signInWithGoogle();
+    }
+    navigate("/rooms/new");
   }
+
   return(
     <div id="container">
       <aside className="side-bar-illustration">
