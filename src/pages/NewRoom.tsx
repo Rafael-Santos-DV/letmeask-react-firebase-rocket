@@ -1,14 +1,33 @@
-import { Link } from "react-router-dom";
+import { FormEvent, useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
 import illustrationimg from "../assets/images/illustration.svg";
 import logoImg from "../assets/images/logo.svg";
 import { useAuth } from "../hooks/useAuth";
+import { database } from "../services/firebase";
 
 import "../styles/auth.scss";
 
 export default function NewRoom() {
 
+  const [newRoom, setNewRoom] = useState('');
   const { user } = useAuth();
-  console.log(user);
+  const navigate = useNavigate();
+
+  async function handleCreateRoom(event: FormEvent) {
+    event.preventDefault();
+
+    if (newRoom.trim() === '') return;
+
+    const roomRef = database.ref("rooms");
+
+    const databaseRoom = await roomRef.push({
+      title: newRoom,
+      authorId: user?.id,
+    });
+
+    navigate(`/rooms/${databaseRoom.key}`);
+
+  }
 
   return(
     <div id="container">
@@ -21,10 +40,12 @@ export default function NewRoom() {
         <div className="content-main-login">
           <img src={logoImg} alt="LetMeask" />
           <h2>Criar uma nova sala</h2>
-          <form className="content-form">
+          <form className="content-form" onSubmit={handleCreateRoom}>
             <input
               type="text"
               name=""
+              onChange={(event) => setNewRoom(event.target.value)}
+              value={newRoom}
               placeholder="Nome da sala"
             />
             <button type="submit">

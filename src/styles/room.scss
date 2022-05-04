@@ -1,0 +1,125 @@
+div#page-room {
+  width: 100%;
+
+  > span {
+    border-bottom: 1px solid #E2E2E2;
+    width: 100%;
+    display: block;
+  }
+}
+
+header.container-header, main.content {
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+header.container-header {
+  padding: 35px 0 20px 0;
+}
+
+header.container-header div.content {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+
+  > img {
+    width: 100px;
+  }
+}
+
+div.box-copy {
+  display: flex;
+  align-items: center;
+  border: 1px solid #835AFD;
+  border-radius: 8px;
+  overflow: hidden;
+  column-gap: 10px;
+  cursor: pointer;
+
+  > img {
+    background-color: #835AFD;
+    padding: 5px;
+  }
+
+  > span {
+    padding-right: 10px;
+  }
+}
+
+main.content {
+  display: flex;
+  max-width: 800px;
+  flex-direction: column;
+  padding-top: 50px;
+  row-gap: 15px;
+}
+
+main.content div.room-title {
+  display: flex;
+  column-gap: 20px;
+  align-items: center;
+
+
+  > span {
+    width: 112px;
+    height: 32px;
+    background-color: #E559F9;
+    border-radius: 30px;
+    color: #fff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: "Roboto";
+    font-weight: 500;
+    font-size: 14px;
+  }
+}
+
+form.form-content {
+  display: flex;
+  flex-direction: column;
+  row-gap: 15px;
+
+  > textarea {
+    width: 100%;
+    height: 113px;
+    resize: none;
+    border: none;
+    border-radius: 5px;
+    padding: 5px;
+  }
+
+  > div.box-submit {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+
+    > button {
+      height: 50px;
+      background-color: #835AFD;
+      color: #fff;
+      border: none;
+      padding: 0 32px;
+      font-family: "Roboot", sans-serif;
+      border-radius: 8px;
+      font-size: 16px;
+      cursor: pointer;
+    }
+  }
+}
+
+div.form-footer {
+  > span {
+    font: 500 14px "Roboto", sans-serif;
+    color: #737380;
+
+    > button {
+      font-size: 14px;
+      appearance: none;
+      border: none;
+      background: transparent;
+      color: #835AFD;
+      cursor: pointer;
+    }
+  }
+}
