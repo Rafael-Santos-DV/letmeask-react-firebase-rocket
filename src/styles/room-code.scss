@@ -1,0 +1,18 @@
+div.box-copy {
+  display: flex;
+  align-items: center;
+  border: 1px solid #835AFD;
+  border-radius: 8px;
+  overflow: hidden;
+  column-gap: 10px;
+  cursor: pointer;
+
+  > img {
+    background-color: #835AFD;
+    padding: 5px;
+  }
+
+  > span {
+    padding-right: 10px;
+  }
+}

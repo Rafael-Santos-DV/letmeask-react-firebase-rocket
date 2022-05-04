@@ -1,18 +1,52 @@
 import letmeaskLogo from "../assets/images/logo.svg";
-import iconCopy from "../assets/images/copy.svg";
+import { RoomCode } from "../components/roomCode";
+import { useParams } from "react-router-dom";
+
+import { FormEvent, useState } from "react";
+import { useAuth } from "../hooks/useAuth";
+import { database } from "../services/firebase";
 
 import "../styles/room.scss";
 
+type RoomParamsType = {
+  id: string;
+}
+
 export function Room(){
+
+  const { user } = useAuth();
+
+  const [newQuestion, setNewQuestion] = useState('');
+  const { id } = useParams<RoomParamsType>();
+
+  async function handleSendQuestion(event: FormEvent) {
+    event.preventDefault();
+
+    if (newQuestion.trim() === "") return;
+
+    if (!user) {
+      throw new Error("You must be logged in");
+    }
+
+    const questions = {
+      content: newQuestion,
+      author: {
+        name: user.name,
+        avatar: user.avatar
+      },
+      isHightLighted: false,
+      isAnswered: false
+    };
+
+    await database.ref(`rooms/${id}/questions`).push(questions);
+  }
+
   return(
     <div id="page-room">
       <header className="container-header">
         <div className="content">
           <img src={letmeaskLogo} alt="letmeask" />
-          <div className="box-copy">
-            <img src={iconCopy} alt="icon copy" />
-            <span>Código</span>
-          </div>
+          <RoomCode code={String(id)} />
         </div>
       </header>
       <span className="bottom-line" />
@@ -21,9 +55,11 @@ export function Room(){
           <h1>Sala React</h1>
           <span>4 perguntas</span>
         </div>
-        <form className="form-content">
+        <form className="form-content" onSubmit={handleSendQuestion}>
           <textarea
             placeholder=" O que você quer pertuntar?"
+            onChange={(event) => setNewQuestion(event.target.value)}
+            value={newQuestion}
           />
 
           <div className="box-submit">
