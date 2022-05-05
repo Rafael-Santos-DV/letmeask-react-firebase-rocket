@@ -1,0 +1,17 @@
+div.user-info {
+  display: flex;
+  align-items: center;
+  column-gap: 8px;
+
+  > img {
+    width: 32px;
+    height: 32px;
+    background-color: #fff;
+    border-radius: 50%;
+  }
+
+  > span {
+    font: 14px 500 "Roboto", sans-serif;
+  }
+}
+

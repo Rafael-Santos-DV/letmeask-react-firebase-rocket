@@ -2,14 +2,36 @@ import letmeaskLogo from "../assets/images/logo.svg";
 import { RoomCode } from "../components/roomCode";
 import { useParams } from "react-router-dom";
 
-import { FormEvent, useState } from "react";
+import { FormEvent, useEffect, useState } from "react";
 import { useAuth } from "../hooks/useAuth";
 import { database } from "../services/firebase";
 
 import "../styles/room.scss";
+import { UserInfo } from "../components/userInfo";
 
 type RoomParamsType = {
   id: string;
+}
+
+type FirebaseQuestions = Record<string, {
+  author: {
+    name: string;
+    avatar: string;
+  }
+  content: string;
+  isAnswered: boolean;
+  isHighLighted: boolean;
+}>
+
+type Questions = {
+  id: string;
+  author: {
+    name: string;
+    avatar: string;
+  }
+  content: string;
+  isAnswered: boolean;
+  isHighLighted: boolean;
 }
 
 export function Room(){
@@ -17,7 +39,35 @@ export function Room(){
   const { user } = useAuth();
 
   const [newQuestion, setNewQuestion] = useState('');
+  const [questions, setQuestions] = useState<Questions[]>([]);
+  const [title, setTitle] = useState('');
   const { id } = useParams<RoomParamsType>();
+
+  useEffect(() => {
+    const roomRef = database.ref(`rooms/${id}`);
+
+    roomRef.once("value", (room) => {
+
+      const databaseRoom = room.val();
+
+      const firebaseQuestion = databaseRoom.questions as FirebaseQuestions ?? {};
+
+      const parsedQuestions = Object.entries(firebaseQuestion).map(([key, value]) => {
+        return {
+          id: key,
+          content: value.content,
+          author: value.author,
+          isHighLighted: value.isHighLighted,
+          isAnswered: value.isAnswered
+        };
+
+      });
+
+      setTitle(databaseRoom.title);
+      setQuestions(parsedQuestions);
+
+    })
+  }, [id]);
 
   async function handleSendQuestion(event: FormEvent) {
     event.preventDefault();
@@ -39,6 +89,8 @@ export function Room(){
     };
 
     await database.ref(`rooms/${id}/questions`).push(questions);
+    setNewQuestion('');
+
   }
 
   return(
@@ -52,8 +104,8 @@ export function Room(){
       <span className="bottom-line" />
       <main className="content">
         <div className="room-title">
-          <h1>Sala React</h1>
-          <span>4 perguntas</span>
+          <h1>Sala {title}</h1>
+          {questions.length > 1 && <span>{questions.length} pergunta(s)</span>}
         </div>
         <form className="form-content" onSubmit={handleSendQuestion}>
           <textarea
@@ -64,7 +116,16 @@ export function Room(){
 
           <div className="box-submit">
             <div className="form-footer">
-              <span>Para enviar uma pergunta, <button>faça seu login</button>.</span>
+              { user ? (
+               <UserInfo
+                avatar={user.avatar}
+                id={user.id}
+                name={user.name}
+               />
+              ) : (
+                  <span>Para enviar uma pergunta, <button>faça seu login</button>.</span>
+              )}
+
             </div>
 
             <button type="submit">Enviar pergunta</button>
