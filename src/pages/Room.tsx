@@ -2,36 +2,17 @@ import letmeaskLogo from "../assets/images/logo.svg";
 import { RoomCode } from "../components/roomCode";
 import { useParams } from "react-router-dom";
 
-import { FormEvent, useEffect, useState } from "react";
+import { FormEvent, useState } from "react";
 import { useAuth } from "../hooks/useAuth";
 import { database } from "../services/firebase";
 
 import "../styles/room.scss";
 import { UserInfo } from "../components/userInfo";
+import { CardQuestions } from "../components/cardQuestions";
+import { useRoom } from "../hooks/useRoom";
 
 type RoomParamsType = {
   id: string;
-}
-
-type FirebaseQuestions = Record<string, {
-  author: {
-    name: string;
-    avatar: string;
-  }
-  content: string;
-  isAnswered: boolean;
-  isHighLighted: boolean;
-}>
-
-type Questions = {
-  id: string;
-  author: {
-    name: string;
-    avatar: string;
-  }
-  content: string;
-  isAnswered: boolean;
-  isHighLighted: boolean;
 }
 
 export function Room(){
@@ -39,35 +20,9 @@ export function Room(){
   const { user } = useAuth();
 
   const [newQuestion, setNewQuestion] = useState('');
-  const [questions, setQuestions] = useState<Questions[]>([]);
-  const [title, setTitle] = useState('');
   const { id } = useParams<RoomParamsType>();
 
-  useEffect(() => {
-    const roomRef = database.ref(`rooms/${id}`);
-
-    roomRef.once("value", (room) => {
-
-      const databaseRoom = room.val();
-
-      const firebaseQuestion = databaseRoom.questions as FirebaseQuestions ?? {};
-
-      const parsedQuestions = Object.entries(firebaseQuestion).map(([key, value]) => {
-        return {
-          id: key,
-          content: value.content,
-          author: value.author,
-          isHighLighted: value.isHighLighted,
-          isAnswered: value.isAnswered
-        };
-
-      });
-
-      setTitle(databaseRoom.title);
-      setQuestions(parsedQuestions);
-
-    })
-  }, [id]);
+  const {questions, title} = useRoom(String(id));
 
   async function handleSendQuestion(event: FormEvent) {
     event.preventDefault();
@@ -132,6 +87,13 @@ export function Room(){
           </div>
 
         </form>
+        {questions.length && questions.map((value) => (
+          <CardQuestions
+            key={value.id}
+            author={value.author}
+            content={value.content}
+          />
+        ))}
       </main>
     </div>
   );
