@@ -25,6 +25,21 @@ header.container-header div.content {
   > img {
     width: 100px;
   }
+
+  > div {
+    display: flex;
+    column-gap: 10px;
+
+    > button {
+      color: #835AFD;
+      background: transparent;
+      border: 1px solid #835AFD;
+      padding: 0px 20px;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 14px;
+    }
+  }
 }
 
 main.content {

@@ -1,5 +1,5 @@
 import "../styles/cardQuestions.scss";
-import like from "../assets/images/like.svg";
+import { ReactNode } from "react";
 
 type CardQuestionsType = {
   content: string;
@@ -7,11 +7,13 @@ type CardQuestionsType = {
     name: string;
     avatar: string;
   }
+  children?: ReactNode
 }
 
 export function CardQuestions({
   content,
   author,
+  children
 }: CardQuestionsType) {
   return(
     <div className="card-questions">
@@ -21,11 +23,8 @@ export function CardQuestions({
           <img src={author.avatar} alt={author.name} />
           <span>{author.name}</span>
         </div>
-        <div>
-          <div className="box-like">
-            <span>1</span>
-            <img src={like} alt="icon like" />
-          </div>
+        <div className="box-like">
+         {children}
         </div>
       </footer>
     </div>
