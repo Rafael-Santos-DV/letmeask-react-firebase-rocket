@@ -1,6 +1,6 @@
 import letmeaskLogo from "../assets/images/logo.svg";
 import { RoomCode } from "../components/roomCode";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 
 import imgDelete from "../assets/images/delete.svg";
 
@@ -20,6 +20,8 @@ export function AdminRoom(){
 
   const { user } = useAuth();
 
+  const navigate = useNavigate();
+
   const { id } = useParams<RoomParamsType>();
 
   const {questions, title} = useRoom(String(id));
@@ -30,6 +32,14 @@ export function AdminRoom(){
     }
   }
 
+  async function handleEndRoom() {
+    await database.ref(`rooms/${id}`).update({
+      endedAt: new Date()
+    });
+
+    navigate("/");
+  }
+
   return(
     <div id="page-room">
       <header className="container-header">
@@ -38,7 +48,7 @@ export function AdminRoom(){
 
           <div>
             <RoomCode code={String(id)} />
-            <button>Encerrar sala</button>
+            <button onClick={handleEndRoom}>Encerrar sala</button>
           </div>
         </div>
       </header>
