@@ -1,25 +1,24 @@
 import letmeaskLogo from "../assets/images/logo.svg";
+import answer from "../assets/images/answer.svg";
+import check from "../assets/images/check.svg";
+
 import { RoomCode } from "../components/roomCode";
 import { useNavigate, useParams } from "react-router-dom";
 
 import imgDelete from "../assets/images/delete.svg";
-
-import { useAuth } from "../hooks/useAuth";
 import { database } from "../services/firebase";
 
 import { CardQuestions } from "../components/cardQuestions";
 import { useRoom } from "../hooks/useRoom";
 
 import "../styles/room.scss";
+import React from "react";
 
 type RoomParamsType = {
   id: string;
 }
 
 export function AdminRoom(){
-
-  const { user } = useAuth();
-
   const navigate = useNavigate();
 
   const { id } = useParams<RoomParamsType>();
@@ -38,6 +37,19 @@ export function AdminRoom(){
     });
 
     navigate("/");
+  }
+
+  async function handleCheckQuestionAsAnswered(questionId: string) {
+    await database.ref(`rooms/${id}/questions/${questionId}`).update({
+      isAnswered: true,
+    });
+
+  }
+
+  async function handleHighLightQuestion(questionId: string) {
+    await database.ref(`rooms/${id}/questions/${questionId}`).update({
+      isHighLighted: true,
+    });
   }
 
   return(
@@ -63,11 +75,35 @@ export function AdminRoom(){
             key={value.id}
             author={value.author}
             content={value.content}
+            isAnswered={value.isAnswered}
+            isHighLighted={value.isHighLighted}
           >
+            {!value.isAnswered && (
+              <React.Fragment>
+                <button
+                  className="check"
+                  type="button"
+                  aria-label="checkar pergunta"
+                  onClick={() => handleCheckQuestionAsAnswered(value.id)}
+                >
+                  <img src={check} alt="checkar pergunta" />
+
+                </button>
+                <button
+                  className="highlighted"
+                  type="button"
+                  aria-label="deletar pergunta"
+                  onClick={() => handleHighLightQuestion(value.id)}
+                >
+                  <img src={answer} alt="icon de deletar" />
+
+                </button>
+              </React.Fragment>
+            )}
             <button
-              className="like-button"
+              className="deletar"
               type="button"
-              aria-label="Marcar como gostei"
+              aria-label="deletar pergunta"
               onClick={() => handleDeleteQuestion(value.id)}
             >
               <img src={imgDelete} alt="icon de deletar" />
